@@ -30,7 +30,7 @@ class Vault:
         with self._lock:
             self._tuples.remove(tuple_to_remove)
 
-    def get(self) -> List[Tuple]:
+    def get(self) -> List[Tuple[str, str]]:
         with self._lock:
             return self._tuples.copy()
 
@@ -39,7 +39,7 @@ class Vault:
         with self._lock:
             self._tuples.clear()
 
-    def get_and_clear(self) -> List[Tuple]:
+    def get_and_clear(self) -> List[Tuple[str, str]]:
         """
         Atomically get all vault data and clear it.
         

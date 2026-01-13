@@ -13,7 +13,7 @@ def test_analyze_prompt_response_with_vault():
     )
     
     assert response.sanitized_prompt == "My name is [REDACTED_PERSON_1]"
-    assert response.is_valid == False
+    assert response.is_valid is False
     assert response.scanners == {"Anonymize": 0.95}
     assert response.vault == [("[REDACTED_PERSON_1]", "John Doe")]
 
@@ -52,7 +52,7 @@ def test_analyze_output_response_with_vault():
     )
     
     assert response.sanitized_output == "My email is [REDACTED_EMAIL_ADDRESS_1]"
-    assert response.is_valid == False
+    assert response.is_valid is False
     assert response.scanners == {"Anonymize": 0.90}
     assert response.vault == [("[REDACTED_EMAIL_ADDRESS_1]", "john@example.com")]
 
