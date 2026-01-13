@@ -244,8 +244,8 @@ def register_routes(
                         1, {"source": "output", "valid": valid, "scanner": scanner}
                     )
 
-                # Retrieve vault data
-                vault_data = vault.get()
+                # Retrieve and clear vault data atomically to prevent race conditions
+                vault_data = vault.get_and_clear()
 
                 response = AnalyzeOutputResponse(
                     sanitized_output=sanitized_output,
@@ -253,9 +253,6 @@ def register_routes(
                     scanners=results_score,
                     vault=vault_data,
                 )
-
-                # Clear vault after retrieving data to prevent leakage between requests
-                vault.clear()
 
                 elapsed_time = time.time() - start_time
                 LOGGER.debug(
@@ -384,8 +381,8 @@ def register_routes(
                         1, {"source": "input", "valid": valid, "scanner": scanner}
                     )
 
-                # Retrieve vault data
-                vault_data = vault.get()
+                # Retrieve and clear vault data atomically to prevent race conditions
+                vault_data = vault.get_and_clear()
 
                 response = AnalyzePromptResponse(
                     sanitized_prompt=sanitized_prompt,
@@ -393,9 +390,6 @@ def register_routes(
                     scanners=results_score,
                     vault=vault_data,
                 )
-
-                # Clear vault after retrieving data to prevent leakage between requests
-                vault.clear()
 
                 elapsed_time = time.time() - start_time
                 LOGGER.debug(
