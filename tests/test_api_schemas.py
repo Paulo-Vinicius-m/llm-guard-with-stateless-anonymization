@@ -1,12 +1,6 @@
 """Tests for API response schemas with vault data."""
 
-import pytest
-from pydantic import ValidationError
-
-from llm_guard_api.app.schemas import (
-    AnalyzePromptResponse,
-    AnalyzeOutputResponse,
-)
+from llm_guard_api.app.schemas import AnalyzeOutputResponse, AnalyzePromptResponse
 
 
 def test_analyze_prompt_response_with_vault():

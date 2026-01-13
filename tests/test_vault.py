@@ -1,7 +1,5 @@
 """Tests for Vault class including the new clear() method."""
 
-import pytest
-
 from llm_guard.vault import Vault
 
 
