@@ -28,6 +28,10 @@ class Vault:
     def get(self) -> List[Tuple]:
         return self._tuples
 
+    def clear(self):
+        """Clear all stored tuples from the vault."""
+        self._tuples.clear()
+
     def placeholder_exists(self, placeholder: str) -> bool:
         for entity_placeholder, _ in self._tuples:
             if placeholder == entity_placeholder:
