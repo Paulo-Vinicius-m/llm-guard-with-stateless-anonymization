@@ -81,7 +81,7 @@ def create_app() -> FastAPI:
         openapi_url="/openapi.json" if is_debug else None,  # hide docs in production
     )
 
-    register_routes(app, config, input_scanners_func, output_scanners_func)
+    register_routes(app, config, input_scanners_func, output_scanners_func, vault)
 
     instrument_app(app)
 
@@ -164,6 +164,7 @@ def register_routes(
     config: Config,
     input_scanners_func: Callable,
     output_scanners_func: Callable,
+    vault: Vault,
 ):
     app.add_middleware(
         CORSMiddleware,
@@ -243,11 +244,16 @@ def register_routes(
                         1, {"source": "output", "valid": valid, "scanner": scanner}
                     )
 
+                # Retrieve and clear vault data atomically to prevent race conditions
+                vault_data = vault.get_and_clear()
+
                 response = AnalyzeOutputResponse(
                     sanitized_output=sanitized_output,
                     is_valid=all(results_valid.values()),
                     scanners=results_score,
+                    vault=vault_data,
                 )
+
                 elapsed_time = time.time() - start_time
                 LOGGER.debug(
                     "Sanitized response",
@@ -375,10 +381,14 @@ def register_routes(
                         1, {"source": "input", "valid": valid, "scanner": scanner}
                     )
 
+                # Retrieve and clear vault data atomically to prevent race conditions
+                vault_data = vault.get_and_clear()
+
                 response = AnalyzePromptResponse(
                     sanitized_prompt=sanitized_prompt,
                     is_valid=all(results_valid.values()),
                     scanners=results_score,
+                    vault=vault_data,
                 )
 
                 elapsed_time = time.time() - start_time

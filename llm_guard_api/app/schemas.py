@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 from pydantic import BaseModel, Field
 
@@ -19,6 +19,11 @@ class AnalyzePromptRequest(ScanPromptRequest):
 
 class AnalyzePromptResponse(ScanPromptResponse):
     sanitized_prompt: str = Field(title="Sanitized prompt")
+    vault: List[Tuple[str, str]] = Field(
+        title="Vault data",
+        description="List of (placeholder, original_value) tuples from anonymization",
+        default=[],
+    )
 
 
 class ScanOutputRequest(BaseModel):
@@ -38,3 +43,8 @@ class AnalyzeOutputRequest(ScanOutputRequest):
 
 class AnalyzeOutputResponse(ScanOutputResponse):
     sanitized_output: str = Field(title="Sanitized output")
+    vault: List[Tuple[str, str]] = Field(
+        title="Vault data",
+        description="List of (placeholder, original_value) tuples from anonymization",
+        default=[],
+    )
