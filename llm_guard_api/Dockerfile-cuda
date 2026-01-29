@@ -33,18 +33,24 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # Set up a working directory
 WORKDIR $HOME/app
 
-# Copy pyproject.toml and other necessary files for installation
-COPY --chown=user:user pyproject.toml ./
-COPY --chown=user:user app ./app
+# Copy the local llm_guard package first
+COPY --chown=user:user llm_guard ./llm_guard_local/llm_guard
+COPY --chown=user:user pyproject.toml ./llm_guard_local/
+COPY --chown=user:user README.md ./llm_guard_local/
 
-# Install the project's dependencies
+# Copy pyproject.toml and other necessary files for installation
+COPY --chown=user:user llm_guard_api/pyproject.toml ./
+COPY --chown=user:user llm_guard_api/app ./app
+
+# Install the local llm_guard package first, then the API dependencies
 RUN pip3 install --no-cache-dir --upgrade pip && \
+    pip3 install --no-cache-dir ./llm_guard_local[onnxruntime-gpu] && \
     pip3 install --no-cache-dir ".[gpu]"
 
 RUN python -m spacy download en_core_web_sm
 
-COPY --chown=user:user ./config/scanners.yml ./config/scanners.yml
-COPY --chown=user:user entrypoint.sh ./entrypoint.sh
+COPY --chown=user:user llm_guard_api/config/scanners.yml ./config/scanners.yml
+COPY --chown=user:user llm_guard_api/entrypoint.sh ./entrypoint.sh
 
 RUN chmod +x ./entrypoint.sh
 
